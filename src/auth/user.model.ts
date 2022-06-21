@@ -3,12 +3,18 @@ import { Token } from './token.model';
 
 @Table({
   tableName: 'users',
+  paranoid: true,
+  underscored: true,
 })
 export class User extends Model {
-  @Column
+  @Column({
+    unique: true,
+  })
   email: string;
 
-  @Column
+  @Column({
+    allowNull: true,
+  })
   password: string;
 
   @HasMany(() => Token)

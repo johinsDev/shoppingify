@@ -1,6 +1,7 @@
 import {
   BelongsTo,
   Column,
+  DataType,
   ForeignKey,
   Length,
   Model,
@@ -11,6 +12,7 @@ import { User } from './user.model';
 @Table({
   tableName: 'tokens',
   underscored: true,
+  paranoid: true,
 })
 export class Token extends Model {
   @Column({
@@ -35,4 +37,10 @@ export class Token extends Model {
 
   @ForeignKey(() => User)
   userId: number;
+
+  @Column(DataType.DATE)
+  expiresAt: Date;
+
+  @Column(DataType.JSON)
+  meta: Record<any, any>;
 }
