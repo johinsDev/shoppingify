@@ -28,7 +28,6 @@ export function covertErrorToObject(errors: ValidationError[]) {
 // compression
 // helmet
 // config database
-// custom interceptor instace of class-validator
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(

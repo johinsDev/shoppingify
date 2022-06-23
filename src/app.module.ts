@@ -1,10 +1,10 @@
-import { ClassSerializerInterceptor, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { APP_INTERCEPTOR } from '@nestjs/core';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
+import { ShoppingListModule } from './shopping-list/shopping-list.module';
 import app from './config/app';
 
 @Module({
@@ -34,14 +34,9 @@ import app from './config/app';
       inject: [ConfigService],
     }),
     AuthModule,
+    ShoppingListModule,
   ],
   controllers: [AppController],
-  providers: [
-    AppService,
-    {
-      provide: APP_INTERCEPTOR,
-      useClass: ClassSerializerInterceptor,
-    },
-  ],
+  providers: [AppService],
 })
 export class AppModule {}

@@ -12,9 +12,13 @@ export class UserRepository {
     public userModel: typeof User,
   ) {}
 
+  model() {
+    return this.userModel;
+  }
+
   async create(body: SignInDto) {
     try {
-      return await this.userModel.create({
+      return await this.model().create({
         email: body.email,
         password: await bcrypt.hash(body.password, 10),
       });
@@ -32,6 +36,6 @@ export class UserRepository {
   }
 
   async findByPk(identifier: string | number) {
-    return this.userModel.findByPk(identifier);
+    return this.model().findByPk(identifier);
   }
 }

@@ -71,3 +71,34 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](LICENSE).
+
+helmet
+compression
+serialize interceptor
+casl
+config database
+swagger
+
+redis
+cache
+throttler
+health
+event
+event database
+upload file
+auth social
+2fa auth (google auth - SMS - mail code)
+passwordless auth
+recover password
+mailer
+smsler
+push web manager
+app push manager
+notification
+snozze notification
+queue
+search engine (algolia) connect to entity - command - programmaticaly
+cqrs
+microservices
+cron
+command

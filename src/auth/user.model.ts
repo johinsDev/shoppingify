@@ -1,4 +1,5 @@
 import { Column, HasMany, Model, Table } from 'sequelize-typescript';
+import { ShoppingList } from 'src/shopping-list/entities/shopping-list.model';
 import { Token } from './token.model';
 
 @Table({
@@ -19,4 +20,7 @@ export class User extends Model {
 
   @HasMany(() => Token)
   tokens: Token[];
+
+  @HasMany(() => ShoppingList)
+  shoppingList: ShoppingList[];
 }
