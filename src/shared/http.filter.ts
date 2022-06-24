@@ -3,9 +3,10 @@ import {
   Catch,
   ExceptionFilter,
   HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 import { FastifyReply } from 'fastify';
-import { DatabaseError } from 'sequelize';
+import { DatabaseError, ValidationError } from 'sequelize';
 
 @Catch(Error)
 export class HttpExceptionFilter implements ExceptionFilter {
@@ -26,6 +27,16 @@ export class HttpExceptionFilter implements ExceptionFilter {
         stack: exception.stack,
         original: exception.original,
       };
+    }
+
+    if (exception instanceof ValidationError) {
+      errors = exception.errors.reduce((acc, e) => {
+        acc[e.path] = e.message;
+
+        return acc;
+      }, {});
+
+      status = HttpStatus.BAD_REQUEST;
     }
 
     if (exception instanceof HttpException) {

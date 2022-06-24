@@ -78,6 +78,9 @@ serialize interceptor
 casl
 config database
 swagger
+husky
+lint staged
+commit lint
 
 redis
 cache
@@ -102,3 +105,5 @@ cqrs
 microservices
 cron
 command
+github actions
+unit test

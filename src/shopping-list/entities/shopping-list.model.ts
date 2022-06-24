@@ -9,8 +9,8 @@ import {
   Table,
 } from 'sequelize-typescript';
 import { User } from 'src/auth/user.model';
+import { ShoppingListItem } from '../../shopping-list-items/entities/shopping-list-item.model';
 import { Item } from './item.model';
-import { ShoppingListItem } from './shopping-list-item.model';
 
 @Table({
   tableName: 'shopping_lists',

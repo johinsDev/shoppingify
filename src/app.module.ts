@@ -5,6 +5,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { ShoppingListModule } from './shopping-list/shopping-list.module';
+import { ShoppingListItemsModule } from './shopping-list-items/shopping-list-items.module';
 import app from './config/app';
 
 @Module({
@@ -35,6 +36,7 @@ import app from './config/app';
     }),
     AuthModule,
     ShoppingListModule,
+    ShoppingListItemsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

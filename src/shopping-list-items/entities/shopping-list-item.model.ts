@@ -1,13 +1,15 @@
 import {
+  AutoIncrement,
   BelongsTo,
   Column,
   DataType,
   ForeignKey,
   Model,
+  PrimaryKey,
   Table,
 } from 'sequelize-typescript';
-import { Item } from './item.model';
-import { ShoppingList } from './shopping-list.model';
+import { Item } from '../../shopping-list/entities/item.model';
+import { ShoppingList } from '../../shopping-list/entities/shopping-list.model';
 
 @Table({
   tableName: 'shopping_lists_items',
@@ -20,6 +22,11 @@ import { ShoppingList } from './shopping-list.model';
   ],
 })
 export class ShoppingListItem extends Model {
+  @PrimaryKey
+  @AutoIncrement
+  @Column(DataType.INTEGER)
+  id: number;
+
   @Column(DataType.INTEGER)
   quantity: number;
 

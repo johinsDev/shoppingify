@@ -16,11 +16,13 @@ export class ItemDto {
   image: string;
 
   @Expose()
-  @Transform(({ obj }) => obj.ShoppingListItem?.quantity ?? 0)
+  @Transform(({ obj, value }) => {
+    return value ?? obj.ShoppingListItem?.quantity ?? 0;
+  })
   quantity: number;
 
   @Expose()
-  @Transform(({ obj }) => Boolean(obj.ShoppingListItem?.done))
+  @Transform(({ obj, value }) => value ?? Boolean(obj.ShoppingListItem?.done))
   done: boolean;
 
   constructor(partial: Partial<Model | ItemDto>) {

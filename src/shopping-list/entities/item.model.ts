@@ -8,8 +8,9 @@ import {
   Model,
   Table,
 } from 'sequelize-typescript';
+import { User } from 'src/auth/user.model';
+import { ShoppingListItem } from '../../shopping-list-items/entities/shopping-list-item.model';
 import { Category } from './category.model';
-import { ShoppingListItem } from './shopping-list-item.model';
 import { ShoppingList } from './shopping-list.model';
 
 @Table({
@@ -43,4 +44,10 @@ export class Item extends Model {
 
   @ForeignKey(() => Category)
   categoryId: number;
+
+  @BelongsTo(() => User)
+  user: User;
+
+  @ForeignKey(() => User)
+  userId: number;
 }
