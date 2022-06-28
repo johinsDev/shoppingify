@@ -1,5 +1,6 @@
 import { Exclude, Expose, Transform } from 'class-transformer';
 import { Model } from 'sequelize-typescript';
+import { Item } from '../entities/item.model';
 
 @Exclude()
 export class ItemDto {
@@ -16,14 +17,24 @@ export class ItemDto {
   image: string;
 
   @Expose()
-  @Transform(({ obj, value }) => {
-    return value ?? obj.ShoppingListItem?.quantity ?? 0;
+  @Transform(({ value, obj }) => {
+    return value ?? (obj as Item).shoppingListItem?.[0]?.quantity ?? 0;
   })
   quantity: number;
 
   @Expose()
-  @Transform(({ obj, value }) => value ?? Boolean(obj.ShoppingListItem?.done))
+  @Transform(({ value, obj }) => {
+    return (
+      value ?? (obj as Item).shoppingListItem?.some((s) => s.done) ?? false
+    );
+  })
   done: boolean;
+
+  @Expose()
+  @Transform(({ value, obj }) => {
+    return value ?? !!(obj as Item).shoppingListItem?.length;
+  })
+  inCart: boolean;
 
   constructor(partial: Partial<Model | ItemDto>) {
     Object.assign(this, partial instanceof Model ? partial.toJSON() : partial);

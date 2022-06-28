@@ -8,7 +8,7 @@ import {
   PrimaryKey,
   Table,
 } from 'sequelize-typescript';
-import { Item } from '../../shopping-list/entities/item.model';
+import { Item } from '../../items/entities/item.model';
 import { ShoppingList } from '../../shopping-list/entities/shopping-list.model';
 
 @Table({

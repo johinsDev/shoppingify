@@ -3,7 +3,6 @@ import {
   ClassSerializerInterceptor,
   Controller,
   Delete,
-  Get,
   Param,
   ParseIntPipe,
   Patch,
@@ -35,14 +34,6 @@ export class ShoppingListItemsController {
       shoppingListId,
       createShoppingListItemDto,
     );
-  }
-
-  @Get(':id')
-  findOne(
-    @Param('id', ParseIntPipe) id: number,
-    @Param('shoppingListId', ParseIntPipe) shoppingListId: number,
-  ) {
-    return this.shoppingListItemsService.findOne(id, shoppingListId);
   }
 
   @Patch(':id')

@@ -50,6 +50,7 @@ async function bootstrap() {
 
   app.useGlobalPipes(
     new ValidationPipe({
+      // whitelist: true,
       exceptionFactory: (errors) => {
         return new ValidationException(covertErrorToObject(errors));
       },

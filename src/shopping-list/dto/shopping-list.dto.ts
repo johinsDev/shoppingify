@@ -1,6 +1,6 @@
 import { Exclude, Expose, Type } from 'class-transformer';
 import { Model } from 'sequelize-typescript';
-import { ItemDto } from './item.dto';
+import { ItemDto } from '../../items/dto/item.dto';
 
 export class ItemDtoCollection extends Array<ItemDto> {}
 

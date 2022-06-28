@@ -6,8 +6,8 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { AuthService } from 'src/auth/auth.service';
-import { ItemDto } from 'src/shopping-list/dto/item.dto';
-import { Item } from 'src/shopping-list/entities/item.model';
+import { ItemDto } from 'src/items/dto/item.dto';
+import { Item } from 'src/items/entities/item.model';
 import { ShoppingList } from 'src/shopping-list/entities/shopping-list.model';
 import { CreateShoppingListItemDto } from './dto/create-shopping-list-item.dto';
 import { UpdateShoppingListItemDto } from './dto/update-shopping-list-item.dto';
@@ -99,24 +99,6 @@ export class ShoppingListItemsService {
     return this.itemDTO(item, shoppingListItem);
   }
 
-  async findOne(id: number, shoppingListId: number) {
-    const [shoppingList, item] = await this.itemAndShoppingList(
-      id,
-      shoppingListId,
-    );
-
-    this.validate(shoppingList, item);
-
-    const shoppingListItem = await this.shoppingListItemByListAndItem(
-      shoppingList,
-      item,
-    );
-
-    if (!shoppingListItem) throw new NotFoundException('Item not found');
-
-    return this.itemDTO(item, shoppingListItem);
-  }
-
   async update(
     id: number,
     shoppingListId: number,
@@ -136,16 +118,10 @@ export class ShoppingListItemsService {
 
     if (!shoppingListItem) throw new NotFoundException('Item not found');
 
-    if (updateShoppingListItemDto.quantity === 0) {
-      await shoppingListItem.destroy({
-        force: true,
-      });
-    } else {
-      await shoppingListItem.update({
-        quantity: updateShoppingListItemDto.quantity,
-        done: updateShoppingListItemDto.done,
-      });
-    }
+    await shoppingListItem.update({
+      quantity: updateShoppingListItemDto.quantity,
+      done: updateShoppingListItemDto.done,
+    });
 
     return this.itemDTO(item, shoppingListItem);
   }

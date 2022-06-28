@@ -1,5 +1,6 @@
 import { Column, HasMany, Model, Table } from 'sequelize-typescript';
-import { Item } from 'src/shopping-list/entities/item.model';
+import { Category } from 'src/categories/entities/category.model';
+import { Item } from 'src/items/entities/item.model';
 import { ShoppingList } from 'src/shopping-list/entities/shopping-list.model';
 import { Token } from './token.model';
 
@@ -27,4 +28,7 @@ export class User extends Model {
 
   @HasMany(() => Item)
   items: Item[];
+
+  @HasMany(() => Category)
+  categories: Category[];
 }

@@ -1,57 +1,34 @@
 import { Attributes, FindOptions } from 'sequelize';
 import {
   BelongsTo,
-  BelongsToMany,
   Column,
-  DataType,
   ForeignKey,
   HasMany,
   Model,
-  Scopes,
   Table,
 } from 'sequelize-typescript';
 import { User } from 'src/auth/user.model';
 import { Item } from '../../items/entities/item.model';
-import { ShoppingListItem } from '../../shopping-list-items/entities/shopping-list-item.model';
 
 @Table({
-  tableName: 'shopping_lists',
   paranoid: true,
+  tableName: 'categories',
   underscored: true,
-  omitNull: true,
 })
-@Scopes(() => ({
-  actives: {
-    where: {
-      cancelledAt: null,
-      completedAt: null,
-    },
-  },
-}))
-export class ShoppingList extends Model {
+export class Category extends Model {
   private static query?: FindOptions<Attributes<Item>>;
 
   @Column
   name: string;
 
-  @Column(DataType.DATE)
-  completedAt: Date;
-
-  @Column(DataType.DATE)
-  cancelledAt: Date;
+  @HasMany(() => Item)
+  items: Item[];
 
   @BelongsTo(() => User)
   user: User;
 
   @ForeignKey(() => User)
-  @Column
   userId: number;
-
-  @BelongsToMany(() => Item, () => ShoppingListItem)
-  items: Item[];
-
-  @HasMany(() => ShoppingListItem)
-  shoppingListItems: ShoppingListItem[];
 
   static where(options: FindOptions<Attributes<Item>>) {
     this.query = options;

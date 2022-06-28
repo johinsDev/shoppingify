@@ -20,6 +20,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
     let meta = {};
 
+    console.log({ exception });
+
     if (exception instanceof DatabaseError && process.env.NODE_ENV === 'dev') {
       meta = {
         sql: exception.sql,

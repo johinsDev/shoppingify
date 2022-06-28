@@ -1,5 +1,5 @@
 import { IsEnum, IsOptional } from 'class-validator';
-import { PaginationDto } from './pagination.dto';
+import { PaginationDto } from '../../shared/pagination.dto';
 
 export enum ShoppingListFilterStatus {
   active = 'active',

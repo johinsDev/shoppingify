@@ -7,51 +7,52 @@ import {
   ForeignKey,
   HasMany,
   Model,
-  Scopes,
   Table,
 } from 'sequelize-typescript';
 import { User } from 'src/auth/user.model';
-import { Item } from '../../items/entities/item.model';
+import { Category } from '../../categories/entities/category.model';
 import { ShoppingListItem } from '../../shopping-list-items/entities/shopping-list-item.model';
+import { ShoppingList } from '../../shopping-list/entities/shopping-list.model';
 
 @Table({
-  tableName: 'shopping_lists',
   paranoid: true,
+  tableName: 'items',
   underscored: true,
-  omitNull: true,
 })
-@Scopes(() => ({
-  actives: {
-    where: {
-      cancelledAt: null,
-      completedAt: null,
-    },
-  },
-}))
-export class ShoppingList extends Model {
+export class Item extends Model {
   private static query?: FindOptions<Attributes<Item>>;
 
   @Column
   name: string;
 
-  @Column(DataType.DATE)
-  completedAt: Date;
+  @Column({
+    allowNull: true,
+    type: DataType.TEXT,
+  })
+  note: string;
 
-  @Column(DataType.DATE)
-  cancelledAt: Date;
+  @Column({
+    allowNull: true,
+  })
+  image: string;
+
+  @HasMany(() => ShoppingListItem)
+  shoppingListItem: ShoppingListItem[];
+
+  @BelongsToMany(() => ShoppingList, () => ShoppingListItem)
+  shoppingList: ShoppingList[];
+
+  @BelongsTo(() => Category)
+  category: Category;
+
+  @ForeignKey(() => Category)
+  categoryId: number;
 
   @BelongsTo(() => User)
   user: User;
 
   @ForeignKey(() => User)
-  @Column
   userId: number;
-
-  @BelongsToMany(() => Item, () => ShoppingListItem)
-  items: Item[];
-
-  @HasMany(() => ShoppingListItem)
-  shoppingListItems: ShoppingListItem[];
 
   static where(options: FindOptions<Attributes<Item>>) {
     this.query = options;

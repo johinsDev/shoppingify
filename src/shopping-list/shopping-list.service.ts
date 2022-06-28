@@ -8,6 +8,8 @@ import { DateTime } from 'luxon';
 import { Attributes, Op } from 'sequelize';
 import { WhereOptions } from 'sequelize/types';
 import { AuthService } from 'src/auth/auth.service';
+import { Item } from 'src/items/entities/item.model';
+import { PaginationMetaDto } from 'src/shared/pagination.dto';
 import { CreateShoppingListDto } from './dto/create-shopping-list.dto';
 import {
   ShoppingListFiltersDto,
@@ -15,7 +17,6 @@ import {
 } from './dto/shopping-list-filters.dto';
 import { ShoppingListDto } from './dto/shopping-list.dto';
 import { UpdateShoppingListDto } from './dto/update-shopping-list.dto';
-import { Item } from './entities/item.model';
 import { ShoppingList } from './entities/shopping-list.model';
 
 @Injectable()
@@ -40,18 +41,6 @@ export class ShoppingListService {
     perPage = 10,
     status = ShoppingListFilterStatus.active,
   }: ShoppingListFiltersDto) {
-    page = Math.max(page, 1);
-
-    perPage = Math.max(perPage, 1);
-
-    const total = await this.shoppingList.count({
-      where: {
-        userId: this.authService.user.id,
-      },
-    });
-
-    page = Math.min(total, page);
-
     let where: WhereOptions<Attributes<ShoppingList>> = {
       userId: this.authService.user.id,
     };
@@ -75,6 +64,7 @@ export class ShoppingListService {
       case ShoppingListFilterStatus.completed:
         where = {
           ...where,
+          cancelledAt: null,
           completedAt: {
             [Op.not]: null,
           },
@@ -82,24 +72,20 @@ export class ShoppingListService {
         break;
     }
 
-    const shoppingList = await this.shoppingList.findAll({
-      where,
-      limit: perPage,
-      offset: (page - 1) * perPage,
-      attributes: ['id', 'name'],
-      include: [
-        {
+    const { data: shoppingList, meta } = await this.shoppingList
+      .where({
+        where,
+        order: [['createdAt', 'DESC']],
+        include: {
           model: Item,
-          attributes: ['name', 'note', 'image'],
         },
-      ],
+      })
+      .paginate(page, perPage);
+
+    return new PaginationMetaDto({
+      data: shoppingList.map((s) => new ShoppingListDto(s)),
+      meta,
     });
-
-    return shoppingList.map((s) => new ShoppingListDto(s));
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} shoppingList`;
   }
 
   async update(id: number, updateShoppingListDto: UpdateShoppingListDto) {

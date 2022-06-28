@@ -6,6 +6,9 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { ShoppingListModule } from './shopping-list/shopping-list.module';
 import { ShoppingListItemsModule } from './shopping-list-items/shopping-list-items.module';
+import { CategoriesModule } from './categories/categories.module';
+import { ItemsModule } from './items/items.module';
+import { StatsModule } from './stats/stats.module';
 import app from './config/app';
 
 @Module({
@@ -37,6 +40,9 @@ import app from './config/app';
     AuthModule,
     ShoppingListModule,
     ShoppingListItemsModule,
+    CategoriesModule,
+    ItemsModule,
+    StatsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
