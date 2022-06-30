@@ -343,6 +343,37 @@ export class AuthService {
   }
 
   /**
+   * Marks the user as logged out
+   */
+  protected markUserAsLoggedOut() {
+    this.isLoggedOut = true;
+    this.isAuthenticated = false;
+    this.viaRemember = false;
+    this.user = null;
+  }
+
+  /**
+   * Logout by removing the token from the storage
+   */
+  public async logout(request?: FastifyRequest) {
+    if (!this.authenticationAttempted) {
+      await this.check(request);
+    }
+
+    /**
+     * Clean up token from storage
+     */
+    if (this.parsedToken) {
+      await this.tokenRepository.destroy(
+        this.parsedToken.tokenId,
+        this.tokenType,
+      );
+    }
+
+    this.markUserAsLoggedOut();
+  }
+
+  /**
    * Same as [[authenticate]] but returns a boolean over raising exceptions
    */
   public async check(request: FastifyRequest): Promise<boolean> {

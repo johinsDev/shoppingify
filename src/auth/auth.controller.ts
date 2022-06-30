@@ -2,6 +2,7 @@ import {
   Body,
   ClassSerializerInterceptor,
   Controller,
+  Delete,
   Get,
   Post,
   UseGuards,
@@ -41,5 +42,11 @@ export class AuthController {
   async me() {
     const user = await this.userRepository.findByPk(this.authService.user.id);
     return new MeDto(user);
+  }
+
+  @UseGuards(AuthGuard)
+  @Delete('/sign-out')
+  async signOut() {
+    return this.authService.logout();
   }
 }

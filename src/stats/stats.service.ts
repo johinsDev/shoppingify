@@ -1,80 +1,64 @@
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/sequelize';
-import { Sequelize } from 'sequelize';
+import { Info } from 'luxon';
 import { AuthService } from 'src/auth/auth.service';
-import { Category } from 'src/categories/entities/category.model';
-import { Item } from 'src/items/entities/item.model';
-import { ShoppingListItem } from 'src/shopping-list-items/entities/shopping-list-item.model';
-import { ShoppingList } from 'src/shopping-list/entities/shopping-list.model';
-import { CreateStatDto } from './dto/create-stat.dto';
-import { UpdateStatDto } from './dto/update-stat.dto';
+import { CategoryRepository } from './category.repository';
+import { ItemRepository } from './item.repository';
+import { ShoppingListItemRepository } from './shopping-list-item.repository';
 
 @Injectable()
 export class StatsService {
   constructor(
-    @InjectModel(Category) private readonly category: typeof Category,
+    private readonly shoppingListItem: ShoppingListItemRepository,
+    private readonly category: CategoryRepository,
+    private readonly item: ItemRepository,
     private readonly auth: AuthService,
   ) {}
 
-  create(createStatDto: CreateStatDto) {
-    return 'This action adds a new stat';
+  private transform(total: string) {
+    return (data: any) => {
+      return {
+        id: data.id,
+        name: data.name,
+        quantity: Number(data.total),
+        percent: Number(
+          ((parseInt(data.total, 10) / parseInt(total, 10)) * 100).toFixed(2),
+        ),
+      };
+    };
   }
 
-  // filter by year
-  // top items
-  // total per month
-  findAll() {
-    return this.category.findAll({
-      where: {
-        userId: this.auth.user.id,
-      },
-      attributes: [
-        ['id', 'categoryId'],
-        'name',
-        [
-          Sequelize.fn(
-            'COALESCE',
-            Sequelize.fn('sum', Sequelize.literal('quantity')),
+  async topItems() {
+    const [total, items] = await Promise.all([
+      this.shoppingListItem.totalQuantityByYear(this.auth.user.id),
+      this.item.topThreeByYear(this.auth.user.id),
+    ]);
+
+    return items.map(this.transform(total));
+  }
+
+  async quantityByMonth() {
+    const quantitiesByMonth = await this.item.quantityByYear(this.auth.user.id);
+
+    return Info.months().map((monthName, index) => {
+      console.log(quantitiesByMonth);
+
+      return {
+        name: monthName,
+        total: Number(
+          quantitiesByMonth.find((month) => month.month === index + 1)?.total ??
             0,
-          ),
-          'total',
-        ],
-      ],
-      group: ['categoryId'],
-      include: {
-        model: Item,
-        attributes: [],
-        include: [
-          {
-            model: ShoppingListItem,
-            attributes: [],
-            include: [
-              {
-                attributes: [],
-                model: ShoppingList,
-                where: {
-                  userId: this.auth.user.id,
-                },
-              },
-            ],
-          },
-        ],
-      },
-      limit: 3,
-      subQuery: false,
-      order: [[Sequelize.literal('"total"'), 'DESC']],
+        ),
+        month: index,
+      };
     });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} stat`;
-  }
+  async topCategories() {
+    const [total, categories] = await Promise.all([
+      this.shoppingListItem.totalQuantityByYear(this.auth.user.id),
+      this.category.topThreeByYear(this.auth.user.id),
+    ]);
 
-  update(id: number, updateStatDto: UpdateStatDto) {
-    return `This action updates a #${id} stat`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} stat`;
+    return categories.map(this.transform(total));
   }
 }

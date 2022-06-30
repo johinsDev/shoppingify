@@ -15,6 +15,20 @@ export class TokenRepository {
     public model: typeof Token,
   ) {}
 
+  /**
+   * Returns the builder query for a given token + type
+   */
+  private getLookupQuery(tokenId: string, tokenType: string) {
+    return this.model.findOne({
+      where: {
+        [Op.and]: {
+          id: tokenId,
+          type: tokenType,
+        },
+      },
+    });
+  }
+
   write(token: ProviderToken) {
     return this.model.create({
       userId: token.userId,
@@ -75,5 +89,12 @@ export class TokenRepository {
     token.meta = meta;
 
     return token;
+  }
+
+  /**
+   * Removes a given token
+   */
+  public async destroy(tokenId: string, tokenType: string) {
+    return (await this.getLookupQuery(tokenId, tokenType)).destroy();
   }
 }
